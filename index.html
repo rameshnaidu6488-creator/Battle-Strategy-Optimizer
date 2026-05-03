@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BATTLE OPTIMIZER — TACTICAL RPG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════
+       HEADER / HUD
+       ══════════════════════════════════════════════════ -->
+  <header class="header">
+
+    <div class="logo-area">
+      <!-- Commander logo sprite -->
+      <svg class="logo-sprite" viewBox="0 0 28 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- Helmet -->
+        <rect x="8"  y="0"  width="12" height="4"  fill="#4caf50"/>
+        <rect x="4"  y="4"  width="20" height="4"  fill="#388e3c"/>
+        <!-- Face -->
+        <rect x="8"  y="8"  width="12" height="8"  fill="#ffcc80"/>
+        <rect x="8"  y="12" width="4"  height="4"  fill="#222"/>
+        <rect x="16" y="12" width="4"  height="4"  fill="#222"/>
+        <!-- Body -->
+        <rect x="4"  y="16" width="20" height="12" fill="#1565c0"/>
+        <rect x="10" y="18" width="8"  height="4"  fill="#ffd600"/>
+        <!-- Legs -->
+        <rect x="8"  y="28" width="5"  height="4"  fill="#263238"/>
+        <rect x="15" y="28" width="5"  height="4"  fill="#263238"/>
+      </svg>
+
+      <div>
+        <div class="game-title">BATTLE OPTIMIZER</div>
+        <div class="game-version">v2.4 — TACTICAL RPG ENGINE</div>
+      </div>
+    </div>
+
+    <!-- HUD Bars -->
+    <div class="hud-bars">
+      <div class="hud-bar-group">
+        <span class="hud-bar-label">HP ████████</span>
+        <div class="hud-bar-track">
+          <div class="hud-bar-fill hp" id="hudHP" style="width:100%"></div>
+        </div>
+        <span class="hud-bar-label">MP ██████░░</span>
+        <div class="hud-bar-track">
+          <div class="hud-bar-fill mp" id="hudMP" style="width:75%"></div>
+        </div>
+        <span class="hud-bar-label">XP ████░░░░</span>
+        <div class="hud-bar-track">
+          <div class="hud-bar-fill xp" id="hudXP" style="width:40%"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="hud-score-lbl">SCORE</div>
+        <div class="hud-score" id="scoreDisplay">00000000</div>
+      </div>
+    </div>
+
+  </header>
+
+  <!-- ══════════════════════════════════════════════════
+       MAIN LAYOUT
+       ══════════════════════════════════════════════════ -->
+  <main class="game-layout">
+
+    <!-- ─────────────── LEFT PANEL ─────────────────── -->
+    <aside class="left-panel">
+
+      <!-- Section 01: Commander -->
+      <div class="panel-section">
+        <div class="panel-section-header">
+          <span class="section-num">01</span>
+          <span class="section-title">COMMANDER</span>
+          <span class="section-badge">LVL 12</span>
+        </div>
+        <div class="commander-box">
+          <div class="commander-sprite-wrap">
+            <canvas id="commanderCanvas" class="sprite-canvas" width="56" height="80"></canvas>
+          </div>
+          <div class="commander-info">
+            <div class="cmd-name">GEN. AXIOM</div>
+            <div class="cmd-level">RANK ★★★☆☆</div>
+            <div class="cmd-stat">
+              <span class="cmd-stat-lbl">STR</span>
+              <div class="cmd-stat-bar"><div class="cmd-stat-fill" style="width:82%"></div></div>
+              <span class="cmd-stat-val">82/100</span>
+            </div>
+            <div class="cmd-stat">
+              <span class="cmd-stat-lbl">INT</span>
+              <div class="cmd-stat-bar"><div class="cmd-stat-fill" style="width:95%"></div></div>
+              <span class="cmd-stat-val">95/100</span>
+            </div>
+            <div class="cmd-stat">
+              <span class="cmd-stat-lbl">EFF</span>
+              <div class="cmd-stat-bar"><div class="cmd-stat-fill" id="cmdStatFill" style="width:0%"></div></div>
+              <span class="cmd-stat-val" id="cmdStatVal">--.--%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 02: Army -->
+      <div class="panel-section">
+        <div class="panel-section-header">
+          <span class="section-num">02</span>
+          <span class="section-title">ARMY CONFIG</span>
+        </div>
+        <div class="army-section">
+          <label class="pixel-label" for="troopCount">TROOP COUNT</label>
+          <input class="pixel-input" type="number" id="troopCount" value="100" min="1" max="9999">
+
+          <span class="formation-label">FORMATION PREVIEW</span>
+          <div class="formation-grid" id="formationGrid"></div>
+        </div>
+      </div>
+
+      <!-- Section 03: Actions -->
+      <div class="panel-section">
+        <div class="panel-section-header">
+          <span class="section-num">03</span>
+          <span class="section-title">ALGORITHMS</span>
+        </div>
+        <div class="actions-section">
+
+          <div class="algo-row">
+            <button class="algo-toggle on" id="algoDP">▣ DYNAMIC PROG.</button>
+            <button class="algo-toggle on blue" id="algoGreedy">▣ GREEDY RATIO</button>
+          </div>
+
+          <button class="px-btn green" id="addEnemyBtn">
+            <span>⊕</span> ADD ENEMY UNIT
+          </button>
+
+          <button class="px-btn yellow" id="resetBtn">
+            <span>↺</span> RESET ALL DATA
+          </button>
+
+          <button class="px-btn big" id="runSimBtn">
+            [ ▶ OPTIMIZE BATTLE ]
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Section LOG -->
+      <div class="panel-section log-section">
+        <div class="panel-section-header">
+          <span class="section-num">SYS</span>
+          <span class="section-title">BATTLE LOG</span>
+          <button class="log-clear-btn" id="clearLogBtn">CLR</button>
+        </div>
+        <div class="log-body" id="logBody"></div>
+      </div>
+
+    </aside>
+
+    <!-- ─────────────── CENTER PANEL ──────────────── -->
+    <section class="center-panel">
+
+      <!-- Sky / Arena -->
+      <div class="battle-sky">
+        <div class="star-field" id="starField"></div>
+
+        <!-- Fighter sprites -->
+        <div class="arena-scene">
+
+          <!-- Ally side -->
+          <div class="fighter-side" id="allySide">
+            <div class="fighter-label ally">ALLIED FORCE</div>
+            <div class="fighter-hp-bar">
+              <div class="fighter-hp-fill blue" id="allyHPFill" style="width:100%"></div>
+            </div>
+            <canvas id="allySprite" class="fighter-sprite ally-anim" width="48" height="72"></canvas>
+            <div class="fighter-name">YOUR TROOPS</div>
+            <div class="fighter-count green" id="allyCountDisplay">100 REMAINING</div>
+          </div>
+
+          <div class="vs-badge">VS</div>
+
+          <!-- Enemy side -->
+          <div class="fighter-side" id="enemySide">
+            <div class="fighter-label enemy">ENEMY FORCE</div>
+            <div class="fighter-hp-bar">
+              <div class="fighter-hp-fill" id="enemyHPFill" style="width:100%"></div>
+            </div>
+            <canvas id="enemySprite" class="fighter-sprite enemy-anim" width="48" height="72"></canvas>
+            <div class="fighter-name">ENEMY ROSTER</div>
+            <div class="fighter-count red" id="enemyCountDisplay">3 REMAINING</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Ground -->
+      <div class="battle-ground">
+        <div class="ground-tiles"></div>
+        <div class="ground-dark"></div>
+      </div>
+
+      <!-- Status bar -->
+      <div class="battle-bar">
+        <div class="battle-status" id="battleStatus">STANDBY — AWAITING ORDERS</div>
+        <div class="sim-id-display" id="simIdDisplay">SIM-0000</div>
+      </div>
+
+      <!-- Session strip (shown after first sim) -->
+      <div class="session-strip" id="sessionStrip">
+        <div class="sess-cell">
+          <div class="sess-lbl">BATTLES</div>
+          <div class="sess-val" id="sessBattles">0</div>
+        </div>
+        <div class="sess-cell">
+          <div class="sess-lbl">WIN RATE</div>
+          <div class="sess-val green" id="sessWinRate">0%</div>
+        </div>
+        <div class="sess-cell">
+          <div class="sess-lbl">TROOPS LOST</div>
+          <div class="sess-val" id="sessTroopsLost">0</div>
+        </div>
+        <div class="sess-cell">
+          <div class="sess-lbl">BEST EFF.</div>
+          <div class="sess-val green" id="sessBestEff">0.0%</div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ─────────────── RIGHT PANEL ───────────────── -->
+    <aside class="right-panel">
+
+      <div class="panel-section">
+        <div class="panel-section-header">
+          <span class="section-num">ENM</span>
+          <span class="section-title">ENEMY ROSTER</span>
+          <span class="section-badge" id="enemyCountBadge">0 UNITS</span>
+        </div>
+      </div>
+
+      <!-- Enemy cards list -->
+      <div class="enemy-list-wrap" id="enemyList">
+        <div class="no-enemy-msg">
+          [ NO ENEMIES LOADED ]<br>ADD ENEMIES TO BEGIN<br>TACTICAL ANALYSIS
+        </div>
+      </div>
+
+      <!-- Results section -->
+      <div class="results-section" id="resultsSection">
+        <div class="await-state">
+          <div class="pixel-spinner"></div>
+          AWAITING SIMULATION DATA
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════
+       VICTORY OVERLAY
+       ══════════════════════════════════════════════════ -->
+  <div class="victory-overlay" id="victoryOverlay">
+    <div class="victory-box">
+      <div class="victory-title">VICTORY!</div>
+      <div class="victory-sub">BATTLE OPTIMIZED — MISSION COMPLETE</div>
+
+      <div class="victory-stats">
+        <div class="v-stat">
+          <div class="v-stat-lbl">TROOPS SURVIVED</div>
+          <div class="v-stat-val" id="vTroopsSurv">—</div>
+        </div>
+        <div class="v-stat">
+          <div class="v-stat-lbl">DAMAGE NEUTRALIZED</div>
+          <div class="v-stat-val" id="vDmgNeutral">—</div>
+        </div>
+        <div class="v-stat">
+          <div class="v-stat-lbl">EFFICIENCY</div>
+          <div class="v-stat-val" id="vEfficiency">—</div>
+        </div>
+        <div class="v-stat">
+          <div class="v-stat-lbl">ALGORITHM</div>
+          <div class="v-stat-val" id="vAlgo">—</div>
+        </div>
+      </div>
+
+      <button class="v-close" id="victoryClose">[ CONTINUE ]</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
